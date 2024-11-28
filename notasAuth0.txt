@@ -1,0 +1,8 @@
+Para iniciar sesión: en su aplicación, visite la ruta /login proporcionada por la biblioteca. 
+Si está ejecutando su proyecto en http://localhost:3000, ese enlace sería
+http://localhost:3000/inicio de sesión
+.
+Para cerrar sesión: en su aplicación, visite la ruta /logout proporcionada por la biblioteca. 
+Si está ejecutando su proyecto en http://localhost:3000, ese enlace sería
+http://localhost:3000/cerrar sesión
+.

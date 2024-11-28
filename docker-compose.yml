@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+  #   environment:
+  #     - MONGO_URI=mongodb://db:27017/myAppDB
+  #   depends_on:
+  #     - db
+
+  # db:
+  #   image: mongo:latest
+  #   ports:
+  #     - '27017:27017'
+  #   volumes:
+  #     - ./data:/data/db

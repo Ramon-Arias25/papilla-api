@@ -1,0 +1,297 @@
+Aquí te dejo un instructivo paso a paso para crear una aplicación "Hola Mundo" utilizando **Node.js**, **Express**, **Docker**, **Git Flow**, y **Mongoose**, siguiendo la arquitectura de controlador y modelo:
+
+### Paso 1: Preparar el proyecto Node.js con Express
+
+1. **Inicializa un proyecto de Node.js**:
+
+   Crea una carpeta para tu proyecto y dentro de ella inicializa un proyecto con `npm`:
+   
+   ```bash
+   mkdir holaMundoApp
+   cd holaMundoApp
+   npm init -y
+   ```
+
+2. **Instala las dependencias**:
+
+   Vamos a instalar las dependencias necesarias para Express, Mongoose y otras utilidades:
+
+   ```bash
+   npm install express mongoose dotenv
+   npm install --save-dev nodemon
+   ```
+
+3. **Estructura de carpetas del proyecto**:
+
+   Creamos la siguiente estructura de carpetas:
+
+   ```
+   holaMundoApp/
+   ├── controllers/
+   │   └── mainController.js
+   ├── models/
+   │   └── userModel.js
+   ├── config/
+   │   └── database.js
+   ├── routes/
+   │   └── mainRoutes.js
+   ├── app.js
+   ├── index.js
+   ├── .env
+   └── Dockerfile
+   ```
+
+### Paso 2: Configurar la aplicación Express
+
+#### 1. **Crear `app.js` para inicializar Express**
+
+Este archivo será donde configuremos el servidor Express y conectemos las rutas.
+
+```javascript
+// app.js
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const mainRoutes = require('./routes/mainRoutes');
+
+// Configuración de dotenv para las variables de entorno
+dotenv.config();
+
+// Crear la aplicación Express
+const app = express();
+
+// Middleware para parsear JSON
+app.use(express.json());
+
+// Rutas principales
+app.use('/', mainRoutes);
+
+// Exportar la app
+module.exports = app;
+```
+
+#### 2. **Crear el archivo `index.js` para levantar el servidor**
+
+Este archivo simplemente se encargará de levantar el servidor usando el archivo `app.js`.
+
+```javascript
+// index.js
+const app = require('./app');
+
+// Establecemos el puerto
+const PORT = process.env.PORT || 3000;
+
+// Levantar el servidor
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
+```
+
+#### 3. **Configurar el controlador en `controllers/mainController.js`**
+
+Aquí creamos un controlador sencillo que responde "Hola Mundo desde el controlador main".
+
+```javascript
+// controllers/mainController.js
+exports.getHelloWorld = (req, res) => {
+  res.send('Hola Mundo desde el controlador main');
+};
+```
+
+#### 4. **Definir las rutas en `routes/mainRoutes.js`**
+
+Este archivo definirá las rutas que usaremos para la aplicación.
+
+```javascript
+// routes/mainRoutes.js
+const express = require('express');
+const router = express.Router();
+const mainController = require('../controllers/mainController');
+
+// Definir ruta para la ruta raíz "/"
+router.get('/', mainController.getHelloWorld);
+
+module.exports = router;
+```
+
+### Paso 3: Configurar Mongoose con un Modelo
+
+#### 1. **Configurar la conexión con MongoDB en `config/database.js`**
+
+Creamos la configuración para la conexión a la base de datos MongoDB. Usaremos variables de entorno para definir la URI de MongoDB.
+
+```javascript
+// config/database.js
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Conectado a MongoDB');
+  } catch (error) {
+    console.error('Error al conectar a MongoDB:', error);
+    process.exit(1);
+  }
+};
+
+module.exports = connectDB;
+```
+
+#### 2. **Crear el modelo de usuario en `models/userModel.js`**
+
+Creamos un modelo básico de `User` utilizando Mongoose.
+
+```javascript
+// models/userModel.js
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+});
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
+```
+
+### Paso 4: Configurar Docker
+
+#### 1. **Crear el archivo `Dockerfile`**
+
+Este archivo define cómo Docker construirá la imagen de nuestra aplicación Node.js.
+
+```dockerfile
+# Usar una imagen de Node.js como base
+FROM node:18-alpine
+
+# Establecer el directorio de trabajo en el contenedor
+WORKDIR /app
+
+# Copiar package.json y package-lock.json
+COPY package*.json ./
+
+# Instalar dependencias
+RUN npm install
+
+# Copiar todo el código de la aplicación
+COPY . .
+
+# Exponer el puerto de la aplicación
+EXPOSE 3000
+
+# Comando para correr la aplicación
+CMD ["npm", "start"]
+```
+
+#### 2. **Crear el archivo `docker-compose.yml`**
+
+Vamos a crear un archivo `docker-compose.yml` para orquestar nuestra aplicación junto con una base de datos MongoDB.
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+    environment:
+      - MONGO_URI=mongodb://db:27017/holaMundoDB
+    depends_on:
+      - db
+
+  db:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./data:/data/db
+```
+
+Este archivo define dos servicios: la aplicación (`app`) y la base de datos (`db`).
+
+### Paso 5: Configurar Git Flow
+
+1. **Inicializa Git en el proyecto**:
+
+   ```bash
+   git init
+   ```
+
+2. **Configura Git Flow** usando el siguiente comando:
+
+   ```bash
+   git flow init
+   ```
+
+   Acepta las configuraciones por defecto. Esto creará ramas como `develop`, `feature/`, `release/`, y `main`.
+
+3. **Crea una rama `feature/hola-mundo` para desarrollar la aplicación "Hola Mundo"**:
+
+   ```bash
+   git checkout -b feature/hola-mundo
+   ```
+
+4. **Commitea y sube los cambios**:
+
+   ```bash
+   git add .
+   git commit -m "Primera versión de Hola Mundo"
+   git push origin feature/hola-mundo
+   ```
+
+### Paso 6: Levantar la aplicación con Docker
+
+1. **Levantar los contenedores**:
+
+   Ejecuta `docker-compose` para levantar tanto la aplicación como MongoDB:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Verificar que todo funciona**:
+
+   Si todo está bien, deberías ver en tu terminal algo como:
+
+   ```
+   Servidor corriendo en http://localhost:3000
+   ```
+
+   Ahora puedes abrir tu navegador e ir a `http://localhost:3000` para ver el mensaje **"Hola Mundo desde el controlador main"**.
+
+---
+
+### Paso 7: ¿Cómo gestionar dependencias?
+
+Para agregar dependencias en tu proyecto:
+
+1. Edita el archivo `package.json` y agrega las dependencias que necesites (o usa `npm install <nombre_paquete>`).
+   
+2. Luego, reconstruye el contenedor para incluir las nuevas dependencias:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+### Próximos pasos
+
+Ya tienes una estructura básica para una aplicación Node.js con Express, conectada a MongoDB mediante Mongoose. Si más adelante deseas agregar pruebas automatizadas, puedes instalar `jest` o `mocha` y configurarlo para ejecutarse en el contenedor como parte de tu flujo de desarrollo. También puedes integrar `ESLint` para mantener un código limpio.
+
+¿Te gustaría añadir algo más o avanzar con otro aspecto del proyecto?

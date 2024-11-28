@@ -1,0 +1,428 @@
+openapi: 3.0.0
+info:
+  title: "Papiya API"
+  description: "API documentation for Papiya backend - contract for frontend integration with React and React Native."
+  version: "1.0.0"
+
+paths:
+
+  # Inventory Endpoints
+  /api/inventory:
+    post:
+      summary: "Create an inventory entry"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurantId:
+                  type: string
+                ingredients:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ingredientId:
+                        type: string
+                      quantity:
+                        type: number
+                    required: ["ingredientId", "quantity"]
+              required: ["restaurantId", "ingredients"]
+      responses:
+        "201":
+          description: "Inventory entry created successfully"
+        "400":
+          description: "Bad Request"
+  
+  /api/inventory/{id}:
+    get:
+      summary: "Get inventory details by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Inventory details"
+        "404":
+          description: "Inventory not found"
+    put:
+      summary: "Update an inventory entry"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ingredients:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ingredientId:
+                        type: string
+                      quantity:
+                        type: number
+                    required: ["ingredientId", "quantity"]
+      responses:
+        "200":
+          description: "Inventory updated successfully"
+        "404":
+          description: "Inventory not found"
+    delete:
+      summary: "Delete an inventory entry"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Inventory deleted successfully"
+        "404":
+          description: "Inventory not found"
+
+  /api/inventory/update-after-recipe:
+    put:
+      summary: "Update inventory after using a recipe"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipeId:
+                  type: string
+                userId:
+                  type: string
+              required: ["recipeId", "userId"]
+      responses:
+        "200":
+          description: "Inventory updated successfully"
+        "400":
+          description: "Insufficient quantity"
+  
+  # Like Endpoints
+  /api/likes:
+    post:
+      summary: "Add a like to a recipe"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                recipeId:
+                  type: string
+              required: ["userId", "recipeId"]
+      responses:
+        "201":
+          description: "Recipe liked successfully"
+        "400":
+          description: "Bad Request"
+  
+  /api/likes/{id}:
+    get:
+      summary: "Get like details by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Like details"
+        "404":
+          description: "Like not found"
+    delete:
+      summary: "Remove a like from a recipe"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Recipe unliked successfully"
+        "404":
+          description: "Like not found"
+
+  # Planning Endpoints
+  /api/planning:
+    post:
+      summary: "Create a meal plan"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                recipes:
+                  type: array
+                  items:
+                    type: string
+                  description: "Array of recipe IDs"
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+              required: ["userId", "recipes", "startDate", "endDate"]
+      responses:
+        "201":
+          description: "Meal plan created successfully"
+        "400":
+          description: "Bad Request"
+
+  /api/planning/{id}:
+    get:
+      summary: "Get meal plan details by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Meal plan details"
+        "404":
+          description: "Meal plan not found"
+    put:
+      summary: "Update a meal plan"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipes:
+                  type: array
+                  items:
+                    type: string
+                  description: "Array of recipe IDs"
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+      responses:
+        "200":
+          description: "Meal plan updated successfully"
+        "404":
+          description: "Meal plan not found"
+    delete:
+      summary: "Delete a meal plan"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Meal plan deleted successfully"
+        "404":
+          description: "Meal plan not found"
+
+  # Recipe Endpoints
+  /api/recipes:
+    post:
+      summary: "Create a recipe"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                ingredients:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ingredientId:
+                        type: string
+                      quantity:
+                        type: number
+                    required: ["ingredientId", "quantity"]
+                isPublic:
+                  type: boolean
+              required: ["name", "ingredients"]
+      responses:
+        "201":
+          description: "Recipe created successfully"
+        "400":
+          description: "Bad Request"
+  
+  /api/recipes/public:
+    get:
+      summary: "Get all public recipes"
+      responses:
+        "200":
+          description: "List of public recipes"
+
+  /api/recipes/user:
+    get:
+      summary: "Get all recipes for the authenticated user"
+      responses:
+        "200":
+          description: "List of user's recipes"
+
+  /api/recipes/{id}:
+    get:
+      summary: "Get a recipe by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Recipe details"
+        "404":
+          description: "Recipe not found"
+    put:
+      summary: "Update a recipe"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                ingredients:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ingredientId:
+                        type: string
+                      quantity:
+                        type: number
+                isPublic:
+                  type: boolean
+      responses:
+        "200":
+          description: "Recipe updated successfully"
+        "404":
+          description: "Recipe not found"
+    delete:
+      summary: "Delete a recipe"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Recipe deleted successfully"
+        "404":
+          description: "Recipe not found"
+
+components:
+  schemas:
+    Inventory:
+      type: object
+      properties:
+        id:
+          type: string
+        restaurantId:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: "#/components/schemas/Ingredient"
+
+    Like:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        recipeId:
+          type: string
+
+    Planning:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        recipes:
+          type: array
+          items:
+            type: string
+          description: "Array of recipe IDs"
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: "#/components/schemas/Ingredient"
+        isPublic:
+          type: boolean
+
+    Ingredient:
+      type: object
+      properties:
+        ingredientId:
+          type: string
+        quantity:
+          type: number

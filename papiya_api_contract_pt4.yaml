@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  title: "Papiya API"
+  description: "API documentation for Papiya backend - contract for frontend integration with React and React Native."
+  version: "1.0.0"
+
+paths:
+
+  # Feed Endpoints
+  /api/feed:
+    get:
+      summary: "Get feed of recipes from followed users"
+      description: "Retrieve the latest recipes posted by users that the authenticated user follows."
+      parameters:
+        - name: "page"
+          in: "query"
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: "Page number for pagination"
+        - name: "limit"
+          in: "query"
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: "Number of items per page for pagination"
+      responses:
+        "200":
+          description: "List of recipes from followed users"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recipe"
+        "401":
+          description: "Unauthorized - User not authenticated"
+        "500":
+          description: "Internal Server Error"
+
+  /api/feed/popular:
+    get:
+      summary: "Get popular recipes"
+      description: "Retrieve a list of recipes sorted by popularity based on likes or favorites."
+      parameters:
+        - name: "page"
+          in: "query"
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: "Page number for pagination"
+        - name: "limit"
+          in: "query"
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: "Number of items per page for pagination"
+      responses:
+        "200":
+          description: "List of popular recipes"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recipe"
+        "401":
+          description: "Unauthorized - User not authenticated"
+        "500":
+          description: "Internal Server Error"
+
+components:
+  schemas:
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: object
+            properties:
+              ingredientId:
+                type: string
+              quantity:
+                type: number
+        isPublic:
+          type: boolean
+        likesCount:
+          type: integer
+        favoritesCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

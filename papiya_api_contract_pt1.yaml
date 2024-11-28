@@ -1,0 +1,310 @@
+## Comment, Favorite, Follow e Ingredient
+openapi: 3.0.0
+info:
+  title: "Papiya API"
+  description: "API documentation for Papiya backend - contract for frontend integration with React and React Native."
+  version: "1.0.0"
+
+paths:
+
+  # Comment Endpoints
+  /api/comments:
+    post:
+      summary: "Create a new comment on a recipe"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                recipeId:
+                  type: string
+                content:
+                  type: string
+              required: ["userId", "recipeId", "content"]
+      responses:
+        "201":
+          description: "Comment created successfully"
+        "400":
+          description: "Bad Request"
+
+  /api/comments/{id}:
+    get:
+      summary: "Get a comment by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Comment details"
+        "404":
+          description: "Comment not found"
+    put:
+      summary: "Update a comment"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+              required: ["content"]
+      responses:
+        "200":
+          description: "Comment updated successfully"
+        "404":
+          description: "Comment not found"
+    delete:
+      summary: "Delete a comment"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Comment deleted successfully"
+        "404":
+          description: "Comment not found"
+
+  # Favorite Endpoints
+  /api/favorites:
+    post:
+      summary: "Add a recipe to favorites"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                recipeId:
+                  type: string
+              required: ["userId", "recipeId"]
+      responses:
+        "201":
+          description: "Recipe added to favorites"
+        "400":
+          description: "Bad Request"
+
+  /api/favorites/{id}:
+    get:
+      summary: "Get a favorite by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Favorite details"
+        "404":
+          description: "Favorite not found"
+    delete:
+      summary: "Remove a recipe from favorites"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Recipe removed from favorites"
+        "404":
+          description: "Favorite not found"
+
+  # Follow Endpoints
+  /api/follows:
+    post:
+      summary: "Follow a user"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                followerId:
+                  type: string
+                followedId:
+                  type: string
+              required: ["followerId", "followedId"]
+      responses:
+        "201":
+          description: "User followed successfully"
+        "400":
+          description: "Bad Request"
+
+  /api/follows/{id}:
+    get:
+      summary: "Get a follow relationship by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Follow relationship details"
+        "404":
+          description: "Follow not found"
+    delete:
+      summary: "Unfollow a user"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "User unfollowed successfully"
+        "404":
+          description: "Follow not found"
+
+  # Ingredient Endpoints
+  /api/ingredients:
+    post:
+      summary: "Create a new ingredient"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                quantity:
+                  type: number
+                unit:
+                  type: string
+              required: ["name", "quantity", "unit"]
+      responses:
+        "201":
+          description: "Ingredient created successfully"
+        "400":
+          description: "Bad Request"
+  
+  /api/ingredients/{id}:
+    get:
+      summary: "Get an ingredient by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ingredient details"
+        "404":
+          description: "Ingredient not found"
+    put:
+      summary: "Update an ingredient"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                quantity:
+                  type: number
+                unit:
+                  type: string
+      responses:
+        "200":
+          description: "Ingredient updated successfully"
+        "404":
+          description: "Ingredient not found"
+    delete:
+      summary: "Delete an ingredient"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Ingredient deleted successfully"
+        "404":
+          description: "Ingredient not found"
+
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        recipeId:
+          type: string
+        content:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+
+    Favorite:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        recipeId:
+          type: string
+
+    Follow:
+      type: object
+      properties:
+        id:
+          type: string
+        followerId:
+          type: string
+        followedId:
+          type: string
+
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        quantity:
+          type: number
+        unit:
+          type: string
