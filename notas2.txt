@@ -1,20 +1,25 @@
-¡Vamos por partes! Te explico cómo interactúan tus aplicaciones y los contenedores, y también cómo manejar las dependencias en cada uno. Además, abordaremos el flujo de trabajo con Git Flow y GitHub.
+¡Vamos por partes! Te explico cómo interactúan tus aplicaciones y los contenedores, y también cómo manejar las dependencias en cada uno. Además, 
+abordaremos el flujo de trabajo con Git Flow y GitHub.
 
 ### 1. **Interacción entre tus apps y los contenedores**
 
-Sí, generalmente tendrás varios contenedores para tu aplicación. Cada componente de tu sistema (backend, frontend, base de datos) corre en su propio contenedor. Así podrás aislar las dependencias y configuraciones de cada uno. Vamos a desglosarlo:
+Sí, generalmente tendrás varios contenedores para tu aplicación. Cada componente de tu sistema (backend, frontend, base de datos) corre en su propio 
+contenedor. Así podrás aislar las dependencias y configuraciones de cada uno. Vamos a desglosarlo:
 
 - **Contenedor 1 (Backend - Node.js)**: Este contenedor ejecuta tu aplicación de backend en Node.js (por ejemplo, un servidor Express).
   
-- **Contenedor 2 (Frontend - React)**: Aquí se ejecuta tu aplicación de frontend en React (que puede servirse con `npm start` o con herramientas como `Vite` o `Webpack`).
+- **Contenedor 2 (Frontend - React)**: Aquí se ejecuta tu aplicación de frontend en React (que puede servirse con `npm start` o con herramientas 
+como `Vite` o `Webpack`).
 
 - **Contenedor 3 (Base de datos - MongoDB)**: MongoDB corre en su propio contenedor, donde puedes gestionar la base de datos de forma independiente.
 
-Estos contenedores se comunican entre sí a través de una red interna que Docker crea automáticamente cuando ejecutas `docker-compose`. Por ejemplo, el backend puede hacer peticiones a la base de datos MongoDB a través del nombre del servicio configurado en `docker-compose.yml`.
+Estos contenedores se comunican entre sí a través de una red interna que Docker crea automáticamente cuando ejecutas `docker-compose`. Por ejemplo,
+ el backend puede hacer peticiones a la base de datos MongoDB a través del nombre del servicio configurado en `docker-compose.yml`.
 
 ### 2. **¿Cómo instalas dependencias en los contenedores?**
 
-Cuando trabajas con Docker, no instalas las dependencias en tu máquina local, sino en los contenedores que Docker genera a partir de tus configuraciones. Aquí te explico cómo se maneja esto:
+Cuando trabajas con Docker, no instalas las dependencias en tu máquina local, sino en los contenedores que Docker genera a partir de tus configuraciones. 
+Aquí te explico cómo se maneja esto:
 
 1. **Archivos `Dockerfile`**: Definen cómo se construye el contenedor para cada servicio, e incluyen las instrucciones para instalar dependencias. 
 
@@ -77,13 +82,15 @@ Cuando trabajas con Docker, no instalas las dependencias en tu máquina local, s
 
    Aquí estás definiendo tres servicios:
 
-   - **Backend**: El código del backend estará en la carpeta `./backend`, y cualquier cambio que hagas localmente será reflejado dentro del contenedor gracias a los volúmenes (`volumes`).
+   - **Backend**: El código del backend estará en la carpeta `./backend`, y cualquier cambio que hagas localmente será reflejado dentro del contenedor 
+   gracias a los volúmenes (`volumes`).
    - **Frontend**: Similar al backend, React estará en `./frontend`, con sus propios puertos expuestos.
    - **Base de datos (MongoDB)**: Usa una imagen oficial de MongoDB de Docker Hub.
 
 3. **Instalación de dependencias**:
    - Si quieres agregar nuevas dependencias, puedes hacerlo editando el archivo `package.json` de cada servicio (por ejemplo, backend o frontend).
-   - Luego, para instalar las nuevas dependencias dentro del contenedor, puedes volver a ejecutar `docker-compose up --build` para que Docker vuelva a construir el contenedor con las nuevas dependencias instaladas.
+   - Luego, para instalar las nuevas dependencias dentro del contenedor, puedes volver a ejecutar `docker-compose up --build` para que Docker vuelva a 
+   construir el contenedor con las nuevas dependencias instaladas.
 
 ### 3. **¿Cómo sabes si se están ejecutando los contenedores?**
 
@@ -125,7 +132,9 @@ En cuanto a **Git Flow**, cuando haces un `git push` por defecto solo subes las 
 
   Esto sube únicamente la rama `feature/nueva-funcionalidad` al repositorio remoto en GitHub. No sube todas las ramas automáticamente.
 
-- **¿Suben todas las ramas?**: No, solo las ramas que especifiques. El flujo de trabajo de Git Flow generalmente implica tener las ramas `develop` y `main` como principales, y luego crear ramas para nuevas funcionalidades (`feature/`), correcciones (`hotfix/`), o versiones listas para producción (`release/`). Git Flow gestiona este proceso de manera organizada.
+- **¿Suben todas las ramas?**: No, solo las ramas que especifiques. El flujo de trabajo de Git Flow generalmente implica tener las ramas `develop` y `main` 
+como principales, y luego crear ramas para nuevas funcionalidades (`feature/`), correcciones (`hotfix/`), o versiones listas para producción (`release/`).
+ Git Flow gestiona este proceso de manera organizada.
 
 ### 5. **Pasos para configurar Git Flow**
 

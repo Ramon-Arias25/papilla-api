@@ -40,13 +40,17 @@
 
 
 
-Con base en tus respuestas, vamos a diseñar un entorno de desarrollo robusto, escalable y ordenado que te permita desarrollar eficientemente, ejecutar pruebas automatizadas, y hacer despliegue continuo en Vercel desde GitHub. A continuación te detallo los pasos para configurar este entorno en tu MacBook Pro 2019 con macOS Sonoma 14.5:
+Con base en tus respuestas, vamos a diseñar un entorno de desarrollo robusto, escalable y ordenado que te permita desarrollar eficientemente, ejecutar pruebas automatizadas, y hacer 
+despliegue continuo en Vercel desde GitHub. A continuación te detallo los pasos para configurar este entorno en tu MacBook Pro 2019 con macOS Sonoma 14.5:
 
 ### 1. **Docker: Introducción y configuración**
-   Docker te permitirá ejecutar tu aplicación en un entorno aislado, haciendo que el desarrollo local sea muy similar a lo que estará en producción. Lo ideal es contenedorar tanto el backend en Node.js como el frontend en React, y cualquier servicio adicional (como la base de datos). Vamos a usar contenedores para asegurar que todo funcione correctamente sin importar las dependencias locales de tu sistema operativo.
+   Docker te permitirá ejecutar tu aplicación en un entorno aislado, haciendo que el desarrollo local sea muy similar a lo que estará en producción. Lo ideal es contenedorar tanto el
+    backend en Node.js como el frontend en React, y cualquier servicio adicional (como la base de datos). Vamos a usar contenedores para asegurar que todo funcione correctamente sin 
+    importar las dependencias locales de tu sistema operativo.
 
    - **¿Por qué usar Docker?**
-     Docker te permite "empaquetar" tu aplicación con todas sus dependencias, garantizando que el entorno en el que desarrollas sea igual al que usas para deployar. Esto facilita la escalabilidad y el control de versiones.
+     Docker te permite "empaquetar" tu aplicación con todas sus dependencias, garantizando que el entorno en el que desarrollas sea igual al que usas para deployar. Esto facilita la 
+     escalabilidad y el control de versiones.
 
    - **Instalación de Docker en macOS:**
      1. Descarga Docker Desktop desde [aquí](https://www.docker.com/products/docker-desktop/).
