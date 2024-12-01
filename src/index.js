@@ -4,7 +4,7 @@ const { auth } = require('express-openid-connect');
 
 require('dotenv').config();
 
-var uri = process.env.URI;
+var uri = process.env.MONGO_URI;
 
 mongoose.set('strictQuery', false);
 
@@ -21,21 +21,14 @@ mongoose.connect(uri)
     })
     .catch(err => console.log(err));
 
-process.on('SIGINT', () => {
-    server.close(() => {
-        console.log('Process terminated');
-        process.exit(0);
-    });
-});
-
-const config = {
-    authRequired: false,
-    auth0Logout: true,
-    secret: process.env.SECRET,
-    baseURL: process.env.URI,
-    clientID: process.env.CLIENT_ID,
-    issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
-};
+// const config = {
+//     authRequired: false,
+//     auth0Logout: true,
+//     secret: process.env.SECRET,
+//     baseURL: process.env.URI,
+//     clientID: process.env.CLIENT_ID,
+//     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
+// };
 
 // // auth router attaches /login, /logout, and /callback routes to the baseURL
 // app.use(auth(config));
