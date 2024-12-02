@@ -1,5 +1,5 @@
 const Inventory = require('../models/Inventory');
-const Recipe = require('../models/Recipe');
+const Recipe = require('../models/recipe');
 
 exports.createInventory = async (req, res) => {
     try {

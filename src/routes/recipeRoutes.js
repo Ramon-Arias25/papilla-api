@@ -8,5 +8,6 @@ router.get('/user', recipeController.getUserRecipes);
 router.get('/:id', recipeController.getRecipe);
 router.put('/:id', recipeController.updateRecipe);
 router.delete('/:id', recipeController.deleteRecipe);
+router.get('/by-ingredients/:userId', recipeController.getRecipesByIngredients);
 
 module.exports = router;

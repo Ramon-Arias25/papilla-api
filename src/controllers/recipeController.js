@@ -1,4 +1,5 @@
-const Recipe = require('../models/Recipe');
+const Recipe = require('../models/recipe');
+const ingredient = require('../models/ingredient');
 
 exports.createRecipe = async (req, res) => {
     try {
@@ -39,6 +40,7 @@ exports.deleteRecipe = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 exports.getPublicRecipes = async (req, res) => {
     try {
         const recipes = await Recipe.find({ isPublic: true }).populate('ownerId', 'name');
@@ -54,5 +56,20 @@ exports.getUserRecipes = async (req, res) => {
         res.json(recipes);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+exports.getRecipesByIngredients = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const ingredient = await ingredient.find({ userId });
+        const ingredientNames = ingredient.map(ingredient => ingredient.name);
+        const recipes = await recipe.find({
+            ingredients: { $in: ingredientNames }
+        });
+
+        res.status(200).json(recipes);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener recetas', error });
     }
 };

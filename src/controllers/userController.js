@@ -3,9 +3,11 @@ const User = require('../models/User');
 exports.testUser = (req, res) => {
     res.status(200).json({ message: 'test user controller' });
 }
+
 exports.createUser = async (req, res) => {
     try {
-        const user = new User(req.body);
+        const { auth0Id, name, email, userType, picture } = req.body;
+        const user = new User({ auth0Id, name, email, userType, picture });
         await user.save();
         res.status(201).json(user);
     } catch (error) {
@@ -25,7 +27,8 @@ exports.getUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const { auth0Id, name, email, userType, picture } = req.body;
+        const user = await User.findByIdAndUpdate(req.params.id, { auth0Id, name, email, userType, picture }, { new: true });
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.json(user);
     } catch (error) {

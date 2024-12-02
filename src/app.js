@@ -4,8 +4,7 @@ const dotenv = require('dotenv');
 var morgan = require('morgan');
 var cors = require('cors');
 var app = express();
-//const { requiresAuth } = require('express-openid-connect');
-
+const { auth } = require('express-openid-connect');
 dotenv.config();
 
 // Importar archivos de rutas
@@ -22,7 +21,20 @@ const commentRoutes = require('./routes/commentRoutes');
 const feedRoutes = require('./routes/feedRoutes');
 const shoppingListRoutes = require('./routes/shoppingListRoutes');
 
-app.get('/', function (req, res) {
+
+const auth0Config = {
+    authRequired: false,
+    auth0Logout: true,
+    secret: process.env.AUTH0_SECRET,
+    baseURL: process.env.BASE_URL,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
+
+};
+
+app.use(auth(auth0Config));
+
+app.get('/GET', function (req, res) {
     res.status(200).send({ message: 'GET request to the homepage (or Hello word)' });
 });
 
@@ -30,11 +42,22 @@ app.get('/Test', function (req, res) {
     res.status(200).send({ message: "I'm running, annoying!!" });
 });
 
-// app.get('/profile', requiresAuth(), (req, res) => {
-//     res.send(JSON.stringify(req.oidc.user));
-// });
+app.get('/', (req, res) => {
+    if (req.oidc.isAuthenticated()) {
+        res.send(`hello ${req.oidc.user.name} <a href="/logout">logout</a>`);
+    } else {
+        res.send('<a href="/login">login</a>');
+    }
+});
 
-//logger
+app.get('/profile', (req, res) => {
+    if (req.oidc.isAuthenticated()) {
+        res.status(200).send(JSON.stringify(req.oidc.user));
+    } else {
+        res.status(401).send({ message: "is not authenticated!!" });
+    }
+});
+
 app.use(morgan('dev'))
 
 //middlewares
